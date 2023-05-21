@@ -153,7 +153,7 @@ ________________________________________________________________________________
 
 Для начала посмотрим на распределение целевой переменной в обучающей выборке.
 
-## Фрагмент кода:
+### Фрагмент кода:
 ```Python
 import seaborn as sns
 import numpy as np
@@ -172,7 +172,7 @@ sns.distplot(train_df['t']) #значение отрицательно
 
 Мы видим, что признаки age, city, school и university имеют длинные хвосты, поэтому мы можем их прологарифмировать. Признак t имеет отрицательные значения, поэтому мы можем добавить к нему константу 1 и прологарифмировать.
 
-## Фрагмент кода:
+### Фрагмент кода:
 ```Python
 train_df['log_age'] = np.log(train_df['age'])
 train_df['log_city'] = np.log(train_df['city'])
@@ -189,21 +189,54 @@ train_df = train_df.drop(['x', 'age', 'city', 'school', 'university', 't'], axis
 test_df = test_df.drop(['age', 'city', 'school', 'university', 't'], axis=1)
 ```
 
-## Шаг 1: Загрузка данных
 
-Начнем с загрузки данных из файлов. Для этого мы будем использовать библиотеку pandas.
+________________________________________________________________________________________________________________________________________
 
-## Фрагмент кода:
+## Шаг 3: Обучение модели
+
+Теперь мы готовы обучить модель. Для этого мы будем использовать библиотеку XGBoost.
+
+### Фрагмент кода:
 ```Python
-import pandas as pd
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
-train_df = pd.read_csv("train.csv")
-test_df = pd.read_csv("test.csv")
-print(train_df.head()) #первые строки(для проверки)
-print(test_df.head())#вторые строки(для проверки)
+#разделение
+X_train, X_valid, y_train, y_valid = train_test_split(train_df.drop('log_x', axis=1), train_df['log_x'], test_size=0.2, random_state=42)
+#преобразование данных в формат DMatrix
+dtrain = xgb.DMatrix(X_train, label=y_train)
+dvalid = xgb.DMatrix(X_valid, label=y_valid)
+dtest = xgb.DMatrix(test_df)
+#определение параметров
+params = {
+    'objective': 'reg:squarederror',
+    'eval_metric': 'rmse',
+    'eta': 0.1,
+    'max_depth': 5,
+    'subsample': 0.7,
+    'colsample_bytree': 0.7,
+    'seed': 42
+}
+
+#Обучение модели
+model = xgb.train(params, dtrain, num_boost_round=1000, evals=[(dvalid, 'valid')], early_stopping_rounds=50, verbose_eval=50)
+y_pred = model.predict(dtest) #предсказание на тесте
+y_pred = np.exp(y_pred) #обратный лагорифм 
 ```
 
 ________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
 
 
 ________________________________________________________________________________________________________________________________________
