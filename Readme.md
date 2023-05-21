@@ -76,7 +76,7 @@ ________________________________________________________________________________
 
 Финальное решение:
 
-<picture> import pandas as pd
+<import pandas as pd
 import numpy as np
 from xgboost import XGBRegressor
 
@@ -111,7 +111,7 @@ predictions = np.exp(model.predict(X_test))
 submission = test_df[['ego_id', 'u', 'v']].copy()
 submission['x1'] = predictions
 submission.sort_values(['ego_id', 'u', 'v']).to_csv('submission.csv', index=False)
-print("Готово!")
+print("Готово!")>
 
 
 
