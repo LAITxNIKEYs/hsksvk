@@ -76,7 +76,7 @@ ________________________________________________________________________________
 
 Финальное решение:
 
-```Pythone
+```Python
 import pandas as pd
 import numpy as np
 from xgboost import XGBRegressor
