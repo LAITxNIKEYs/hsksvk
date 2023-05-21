@@ -234,12 +234,8 @@ ________________________________________________________________________________
 
 ### Фрагмент кода:
 ```Python
-import pandas as pd
-
-train_df = pd.read_csv("train.csv")
-test_df = pd.read_csv("test.csv")
-print(train_df.head()) #первые строки(для проверки)
-print(test_df.head())#вторые строки(для проверки)
+submission = pd.DataFrame({'Id': test_df.index, 'x': y_pred})
+submission.to_csv("submission.csv", index=False)
 ```
 
 ________________________________________________________________________________________________________________________________________
