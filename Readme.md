@@ -140,6 +140,51 @@ print(test_df.head())#вторые строки(для проверки)
 ________________________________________________________________________________________________________________________________________
 
 
+ Шаг 2: Предобработка данных
+
+Перед тем, как начать обучение модели, необходимо провести предобработку данных. В  задаче  мы использовали следующие признаки:
+
+#1. Момент появления связи между пользователями.
+#2. Возраст пользователей.
+#3. Идентификатор города.
+#4. Пол пользователя.
+#5. Идентификаторы школ и университетов, указанных в профиле.
+
+Для начала посмотрим на распределение целевой переменной в обучающей выборке.
+
+```Python
+import seaborn as sns
+import numpy as np
+
+
+sns.distplot(train_df['x'])
+train_df['log_x'] = np.log(train_df['x']) #преобразование в логарифм
+sns.distplot(train_df['log_x'])
+#проверка числовых признаков
+sns.distplot(train_df['age'])
+sns.distplot(train_df['city'])
+sns.distplot(train_df['school'])
+sns.distplot(train_df['university'])
+sns.distplot(train_df['t']) #значение отрицательно
+
+
+train_df['log_age'] = np.log(train_df['age'])
+train_df['log_city'] = np.log(train_df['city'])
+train_df['log_school'] = np.log(train_df['school'])
+train_df['log_university'] = np.log(train_df['university'])
+train_df['log_t'] = np.log(train_df['t'] + 1)
+test_df['log_age'] = np.log(test_df['age'])
+test_df['log_city'] = np.log(test_df['city'])
+test_df['log_school'] = np.log(test_df['school'])
+test_df['log_university'] = np.log(test_df['university'])
+test_df['log_t'] = np.log(test_df['t'] + 1) #преобразуем с константой 1
+#удаление нужных признаков
+train_df = train_df.drop(['x', 'age', 'city', 'school', 'university', 't'], axis=1)
+test_df = test_df.drop(['age', 'city', 'school', 'university', 't'], axis=1)
+```
+
+________________________________________________________________________________________________________________________________________
+
                                               Связь с нами и участники команды:
                                               
 ________________________________________________________________________________________________________________________________________
